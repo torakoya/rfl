@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <title>バイク乗りの体感温度</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.9/dist/css/uikit.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.9/dist/js/uikit.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.9/dist/js/uikit-icons.min.js"></script>
+        <style>
+            th { text-transform: none !important }
+        </style>
+        <script>
+            // t: temperature (℃)
+            // h: humidity (%)
+            // v: wind speed (m/s)
+            function net(t, h, v) {
+                return 37 -
+                    (37 - t) / (0.68 - 0.0014 * h + 1 / (1.76 + 1.4 * v ** 0.75)) -
+                    0.29 * t * (1 - h / 100)
+            }
+
+            function kph2mps(kph) {
+                return kph * 1000 / 60 / 60
+            }
+
+            function is_numstr(str) {
+                return str.search(/^[-+]?\d+(?:\.\d*)?$/) != -1
+            }
+
+            function calc() {
+                let st = document.getElementById("t").value.trim();
+                let sh = document.getElementById("h").value.trim();
+                let t = is_numstr(st) ? Number(st) : NaN;
+                let h = (is_numstr(sh) && sh[0] != "-") ? Number(sh) : NaN;
+
+                let elems = document.querySelectorAll(".net-value");
+                for (let i = 0; i < elems.length; i++) {
+                    if (isNaN(t) || isNaN(h)) {
+                        elems[i].innerText= "?";
+                    } else {
+                        let n = net(t, h, kph2mps(i * 10));
+                        elems[i].innerText = n.toFixed(1);
+                    }
+                }
+            }
+
+            function setup() {
+                calc();
+
+                document.getElementById("t").addEventListener("input", (event) => {
+                    calc()
+                });
+                document.getElementById("h").addEventListener("input", (event) => {
+                    calc()
+                });
+            }
+
+            if (document.readyState == "loading") {
+                document.addEventListener("DOMContentLoaded", (event) => {
+                    setup()
+                });
+            } else {
+                setup();
+            }
+        </script>
+    </head>
+    <body>
+    <div class="uk-container">
+        <h1>バイク乗りの体感温度</h1>
+        <p>気温と湿度を入力してください。そのときの時速ごとの体感温度を計算します。</p>
+        <noscript>
+            <p>JavaScript が無効にされているので計算できません。</p>
+        </noscript>
+        <form>
+            <div class="uk-margin">
+                <label for="t" class="uk-form-label">気温 (℃):</label>
+                <input id="t" class="uk-input uk-form-width-small" value="10.0">
+            </div>
+            <div class="uk-margin">
+                <label for="h" class="uk-form-label">湿度 (％):</label>
+                <input id="h" class="uk-input uk-form-width-small" value="50">
+            </div>
+        </form>
+
+        <div class="uk-overflow-auto">
+        <table class="uk-table uk-table-divider">
+            <thead>
+                <tr>
+                    <th>時速 (km/h)</th>
+                    <th>0</th>
+                    <th>10</th>
+                    <th>20</th>
+                    <th>30</th>
+                    <th>40</th>
+                    <th>50</th>
+                    <th>60</th>
+                    <th>70</th>
+                    <th>80</th>
+                    <th>90</th>
+                    <th>100</th>
+                <tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>体感温度 (℃)</th>
+                    <td class="net-value">?</td>
+                    <td class="net-value">?</td>
+                    <td class="net-value">?</td>
+                    <td class="net-value">?</td>
+                    <td class="net-value">?</td>
+                    <td class="net-value">?</td>
+                    <td class="net-value">?</td>
+                    <td class="net-value">?</td>
+                    <td class="net-value">?</td>
+                    <td class="net-value">?</td>
+                    <td class="net-value">?</td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+        <p><label class="uk-label">Note</label> 体感温度の計算は <a href="https://ja.wikipedia.org/wiki/%E4%BD%93%E6%84%9F%E6%B8%A9%E5%BA%A6">Gregorczuk の NET</a> によります。「バイクの速度に等しい速度の風を受ける」として計算しています。</p>
+    </div>
+    </body>
+</html>
