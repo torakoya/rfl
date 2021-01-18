@@ -40,7 +40,7 @@
                         elems[i].innerText= "?";
                     } else {
                         let n = net(t, h, kph2mps(i * 10));
-                        elems[i].innerText = n.toFixed(1);
+                        elems[i].innerText = n.toFixed(0);
                     }
                 }
             }
@@ -75,7 +75,7 @@
         <form>
             <div class="uk-margin">
                 <label for="t" class="uk-form-label">気温 (℃):</label>
-                <input id="t" class="uk-input uk-form-width-small" value="10.0">
+                <input id="t" class="uk-input uk-form-width-small" value="10">
             </div>
             <div class="uk-margin">
                 <label for="h" class="uk-form-label">湿度 (％):</label>
