@@ -9,6 +9,14 @@
         <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.11/dist/js/uikit-icons.min.js"></script>
         <style>
             th { text-transform: none !important }
+
+            :root { color-scheme: light dark }
+            @media (prefers-color-scheme: dark) {
+                :root { background: black; color: white }
+                h1, .uk-form-label { color: #ccc }
+                .uk-input, .uk-input:focus { background: #333; color: white }
+                .uk-input { border-color: #666 }
+            }
         </style>
         <script>
             // t: temperature (℃)
